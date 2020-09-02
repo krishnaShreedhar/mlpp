@@ -2,3 +2,7 @@
 Model architectures: https://machinelearningmastery.com/keras-functional-api-deep-learning/
 """
 
+from tensorflow.keras.layers import Input, Dense
+
+visible = Input(shape=(2,))
+hidden = Dense(2)(visible)
