@@ -180,6 +180,33 @@ def json_to_tf_objects(str_json):
     return dict_model_arch
 
 
+def to_optimizer(dict_optimizer):
+    """
+
+    :param dict_optimizer:
+    :return:
+    """
+    return dict_optimizer['opt_type'](**dict_optimizer['opt_params'])
+
+
+def to_loss(dict_loss):
+    """
+
+    :param dict_loss:
+    :return:
+    """
+    return dict_loss['loss']
+
+
+def to_metrics(dict_metrics):
+    """
+
+    :param dict_metrics:
+    :return:
+    """
+    return dict_metrics['metrics']
+
+
 def build_neural_arch(dict_params):
     """
 
@@ -188,7 +215,13 @@ def build_neural_arch(dict_params):
     """
     dict_model_arch = json_to_tf_objects(dict_params['json_model_arch'])
     print(dict_model_arch)
-    model = None
+    inputs = tf.keras.layers.Input((100, 1))
+    outputs = dict_model_arch['layers']['output']
+    model = tf.keras.Model(inputs=inputs, outputs=outputs)
+    optimizer = to_optimizer(dict_model_arch['optimizer'])
+    loss = to_loss(dict_model_arch['loss'])
+    list_metrics = to_metrics(dict_model_arch['metrics'])
+    model.compile(optimizer=optimizer, loss=loss, metrics=list_metrics)
     return model
 
 
