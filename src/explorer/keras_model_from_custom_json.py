@@ -2,6 +2,7 @@
 Build a custom model architecture using custom json reader and output a tensorflow keras model object
 """
 import tensorflow as tf
+import json
 
 
 def layers(str_layer):
@@ -109,11 +110,84 @@ def metrics(str_metric):
     return dict_metrics[str_metric]
 
 
-def json_to_tf_objects():
-    pass
+def str_to_layer(dict_layer):
+    """
+
+    :param dict_layer:
+    :return:
+    """
+    dict_layer['layer'] = layers(dict_layer['layer'])
+    dict_layer['activation'] = activations(dict_layer['activation'])
+    return dict_layer
+
+
+def str_to_layers(dict_layers):
+    """
+
+    :param dict_layers:
+    :return:
+    """
+    for key, list_layers in dict_layers.items():
+        print(f"key:{key}, list_layers: {list_layers}")
+        dict_layers[key] = [str_to_layer(dict_layer) for dict_layer in list_layers]
+    return dict_layers
+
+
+def str_to_optimizer(dict_optimizer):
+    """
+
+    :param dict_optimizer:
+    :return:
+    """
+    dict_optimizer['opt_type'] = optimizers(dict_optimizer['opt_type'])
+    return dict_optimizer
+
+
+def str_to_loss(dict_loss):
+    """
+
+    :param dict_loss:
+    :return:
+    """
+    dict_loss['loss'] = losses(dict_loss['loss'])
+    return dict_loss
+
+
+def str_to_metrics(dict_metrics):
+    """
+
+    :param dict_metrics:
+    :return:
+    """
+    dict_metrics['metrics'] = [metrics(str_metric) for str_metric in dict_metrics['metrics']]
+    return dict_metrics
+
+
+def json_to_tf_objects(str_json):
+    """
+
+    :param str_json:
+    :return:
+    """
+    dict_model_arch = json.loads(str_json)
+    print(f"dict_model_arch: {dict_model_arch}")
+
+    dict_model_arch['layers'] = str_to_layers(dict_model_arch['layers'])
+    dict_model_arch['optimizer'] = str_to_optimizer(dict_model_arch['optimizer'])
+    dict_model_arch['loss'] = str_to_loss(dict_model_arch['loss'])
+    dict_model_arch['metrics'] = str_to_metrics(dict_model_arch['metrics'])
+
+    return dict_model_arch
 
 
 def build_neural_arch(dict_params):
+    """
+
+    :param dict_params:
+    :return:
+    """
+    dict_model_arch = json_to_tf_objects(dict_params['json_model_arch'])
+    print(dict_model_arch)
     model = None
     return model
 

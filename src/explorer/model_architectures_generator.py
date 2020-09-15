@@ -1,6 +1,7 @@
 """
 This will generate different architecture settings depending on user input via json file
 """
+import explorer.keras_model_from_custom_json as kmfj
 import json
 
 
@@ -59,3 +60,20 @@ def model_arch_json():
     }
 
     return json.dumps(dict_model_arch, indent=2)
+
+
+def get_model():
+    dict_params = {
+        'json_model_arch': model_arch_json()
+    }
+    print(f"dict_params: {dict_params}")
+    model = kmfj.build_neural_arch(dict_params)
+    model.summary()
+
+
+def main():
+    get_model()
+
+
+if __name__ == '__main__':
+    main()
